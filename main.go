@@ -24,10 +24,6 @@ func convertHTMLToPDF(w http.ResponseWriter, r *http.Request) {
 
 	token := os.Getenv("TOKEN")
 
-	if token == "" {
-		token = "VcV3MiC4DKG18P7SLNGs28ZV853PrlfGUjo0U7Dk7zLZpVsVdg"
-	}
-
 	authorization := r.Header.Get("Authorization")
 
 	if authorization != "Bearer "+token {
