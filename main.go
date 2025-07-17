@@ -37,6 +37,7 @@ func convertHTMLToPDF(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := pdf.NewPageReader(bytes.NewReader(body))
+	page.JavaScriptDelay.Set(3000)
 	page.EnableLocalFileAccess.Set(true)
 
 	pdfg.AddPage(page)
