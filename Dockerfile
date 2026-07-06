@@ -1,22 +1,5 @@
-# Etapa 1: Build com Go instalado manualmente
-FROM ubuntu:22.04 AS builder
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Instalar dependências
-RUN apt-get update && apt-get install -y \
-    wget \
-    ca-certificates \
-    git \
-    build-essential
-
-# Instalar Go manualmente
-ENV GOLANG_VERSION=1.21.9
-RUN wget https://go.dev/dl/go$GOLANG_VERSION.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64.tar.gz && \
-    ln -s /usr/local/go/bin/go /usr/bin/go
-
-ENV PATH=$PATH:/usr/local/go/bin
+# Etapa 1: Build
+FROM golang:1.26-bookworm AS builder
 
 WORKDIR /app
 COPY . .
@@ -24,14 +7,18 @@ COPY . .
 RUN go mod tidy
 RUN go build -o server .
 
-# Etapa 2: Runtime com wkhtmltopdf e Ubuntu
-FROM ubuntu:22.04
+# Etapa 2: Runtime com Chromium
+FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV CHROME_PATH=/usr/bin/chromium
 
 RUN apt-get update && apt-get install -y \
-    wkhtmltopdf \
+    chromium \
     ca-certificates \
+    fonts-liberation \
+    fonts-dejavu \
+    fonts-noto-color-emoji \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
