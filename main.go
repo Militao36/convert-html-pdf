@@ -28,6 +28,10 @@ func chromeExecPath() string {
 		}
 	}
 
+	if _, err := os.Stat("/headless-shell/headless-shell"); err == nil {
+		return "/headless-shell/headless-shell"
+	}
+
 	return "/usr/bin/chromium"
 }
 
@@ -42,11 +46,17 @@ func renderPDF(body []byte) ([]byte, error) {
 		chromedp.ExecPath(chromeExecPath()),
 		chromedp.Flag("headless", true),
 		chromedp.Flag("no-sandbox", true),
+		chromedp.Flag("disable-setuid-sandbox", true),
 		chromedp.Flag("disable-dev-shm-usage", true),
 		chromedp.Flag("disable-gpu", true),
+		chromedp.Flag("no-zygote", true),
 		chromedp.Flag("disable-background-networking", true),
 		chromedp.Flag("disable-extensions", true),
 		chromedp.Flag("disable-sync", true),
+		chromedp.Flag("disable-crash-reporter", true),
+		chromedp.Flag("disable-crashpad", true),
+		chromedp.Flag("disable-software-rasterizer", true),
+		chromedp.Flag("disable-features", "UseDBus"),
 		chromedp.Flag("no-first-run", true),
 		chromedp.Flag("no-default-browser-check", true),
 		chromedp.UserDataDir(userDataDir),
